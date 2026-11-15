@@ -11,6 +11,7 @@ set(LLVM_TUTOR_PLUGINS
     RIV
     DuplicateBB
     OpcodeCounter
+    MyHelloWorld
     MergeBB
     )
 
@@ -34,6 +35,8 @@ set(DuplicateBB_SOURCES
   DuplicateBB.cpp)
 set(OpcodeCounter_SOURCES
   OpcodeCounter.cpp)
+set(MyHelloWorld_SOURCES
+  MyHelloWorld.cpp)
 set(MergeBB_SOURCES
   MergeBB.cpp)
 
