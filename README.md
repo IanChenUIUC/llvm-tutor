@@ -46,7 +46,7 @@ are interested in similar tutorial for Clang.
 * Part 3: Toy Passes
   * [MyHelloWorld](#myhelloworld)
   * [DeadlineByCheckpoint](#deadlinebycheckpoint)
-  * [FloatingPointAssociative (IN PROGRESS)](#floatingpointassociative-in-progress)
+  * [FloatingPointAssociative](#floatingpointassociative)
   * [SplitPaths (PLANNED)](#splitpaths-planned)
 * [Contributing](#contributing)
 * [References](#references)
@@ -1186,23 +1186,29 @@ DeadlineByCheckpoint
 ====================
 This pass is inspired as I just read the [Janus (Foukas et al. MobiCom '23)](https://doi.org/10.1145/3570361.3592493) paper.
 Namely, for safety, they insert a checkpoint that checks if the deadline is exceeded, and then exits the user program if it is.
-Here, I am implementing a simple version, where every function has a time limit, and the start of every basic block checks the limit.
+Here, I am implementing a simple version, where functions annotated with `dl_chk` have a time limit, and the start of every basic block checks the limit.
 
-The relevant reference examples include ... where I need to:
+The relevant reference examples include [Inject Func Call](#injectfunccall) for the writing.
+I also added a runtime for the check, so that all the pass needs to do is:
 
-- module: insert the right runtime functions (writing this in C could be good)
-- entry point: get the start time
-- entering any basic block: get the end time, and call the runtime
+- upon every function call to an annotated function, enter/exit the scope
+- upon every basic block, add a check function
 
-In terms of LLVM, this is very simple and the logic is delegated to the runtime (TODO).
+Note that this adds a lot of overhead, and there are simple strategies (not explored) to remove it.
+Moreover, I was not certain on whethe the enter/exit should be in the function or the callers.
+I decided on the callers for simplicity because I did not want to find all termination blocks.
+However, I don't think this design would work for exceptions, and other ways of calling a function.
 
-FloatingPointAssociative (IN PROGRESS)
+FloatingPointAssociative
 ========================
 My compilers instructor continuously makes a fuss about floating point operations not being associative.
 Therefore, it seems interesting to change every sequence of FP adds to instead be right associative  and see if the result changes!
 That is what this pass does.
 
-This is closely related to #convertfcmpeq.
+This is closely related to [ConvertFCmpEq](#convertfcmpeq).
+Namely, we define a chain as having left operands be the result of a previous fadd.
+Our example input uses this as an inlined matrix multiplication, where this is fairly common.
+Then, we just replace it with the right-associative version, which leads to different numerical outputs.
 
 SplitPaths (PLANNED)
 =====================

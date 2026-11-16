@@ -6,6 +6,7 @@ set(LLVM_TUTOR_PLUGINS
     FindFCmpEq
     FindFAddChain
     ConvertFCmpEq
+    ConvertFAddAssoc
     InjectFuncCall
     MBAAdd
     MBASub
@@ -27,6 +28,8 @@ set(FindFAddChain_SOURCES
   FindFAddChain.cpp)
 set(ConvertFCmpEq_SOURCES
   ConvertFCmpEq.cpp)
+set(ConvertFAddAssoc_SOURCES
+  ConvertFAddAssoc.cpp)
 set(InjectFuncCall_SOURCES
   InjectFuncCall.cpp)
 set(MBAAdd_SOURCES
