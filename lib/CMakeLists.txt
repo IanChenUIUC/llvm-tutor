@@ -12,6 +12,7 @@ set(LLVM_TUTOR_PLUGINS
     DuplicateBB
     OpcodeCounter
     MyHelloWorld
+    DeadlineByCheckpoint
     MergeBB
     )
 
@@ -37,6 +38,8 @@ set(OpcodeCounter_SOURCES
   OpcodeCounter.cpp)
 set(MyHelloWorld_SOURCES
   MyHelloWorld.cpp)
+set(DeadlineByCheckpoint_SOURCES
+  DeadlineByCheckpoint.cpp)
 set(MergeBB_SOURCES
   MergeBB.cpp)
 

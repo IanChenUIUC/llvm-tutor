@@ -45,7 +45,7 @@ are interested in similar tutorial for Clang.
   * [Optimisation Passes Inside LLVM](#optimisation-passes-inside-llvm)
 * Part 3: Toy Passes
   * [MyHelloWorld](#myhelloworld)
-  * [DeadlineByCheckpoint (IN PROGRESS)](#deadlinebycheckpoint-in-progress)
+  * [DeadlineByCheckpoint](#deadlinebycheckpoint)
   * [FloatingPointCommutative (PLANNED)](#floatingpointcommutative-planned)
   * [SplitPaths (PLANNED)](#splitpaths-planned)
 * [Contributing](#contributing)
@@ -1182,7 +1182,7 @@ struct Result {
 And then we have a separate printer that goes ahead and prints the value of each function.
 This is very straightforward and follows directly from the two reference examples.
 
-DeadlineByCheckpoint (IN PROGRESS)
+DeadlineByCheckpoint
 ====================
 This pass is inspired as I just read the [Janus (Foukas et al. MobiCom '23)](https://doi.org/10.1145/3570361.3592493) paper.
 Namely, for safety, they insert a checkpoint that checks if the deadline is exceeded, and then exits the user program if it is.
