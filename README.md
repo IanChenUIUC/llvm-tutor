@@ -46,7 +46,7 @@ are interested in similar tutorial for Clang.
 * Part 3: Toy Passes
   * [MyHelloWorld](#myhelloworld)
   * [DeadlineByCheckpoint](#deadlinebycheckpoint)
-  * [FloatingPointCommutative (PLANNED)](#floatingpointcommutative-planned)
+  * [FloatingPointAssociative (IN PROGRESS)](#floatingpointassociative-in-progress)
   * [SplitPaths (PLANNED)](#splitpaths-planned)
 * [Contributing](#contributing)
 * [References](#references)
@@ -1196,10 +1196,10 @@ The relevant reference examples include ... where I need to:
 
 In terms of LLVM, this is very simple and the logic is delegated to the runtime (TODO).
 
-FloatingPointCommutative (PLANNED)
+FloatingPointAssociative (IN PROGRESS)
 ========================
-My compilers instructor continuously makes a fuss about floating point operations not being commutative.
-Therefore, it seems interesting to swap the order of every FP operation and see if the result changes!
+My compilers instructor continuously makes a fuss about floating point operations not being associative.
+Therefore, it seems interesting to change every sequence of FP adds to instead be right associative  and see if the result changes!
 That is what this pass does.
 
 This is closely related to #convertfcmpeq.
