@@ -43,6 +43,11 @@ are interested in similar tutorial for Clang.
   * [Dynamic vs Static Plugins](#dynamic-vs-static-plugins)
   * [Optimisation Passes Inside LLVM](#optimisation-passes-inside-llvm)
   * [Optimisation Passes Inside LLVM](#optimisation-passes-inside-llvm)
+* Part 3: Toy Passes
+  * [MyHelloWorld](#myhelloworld)
+  * [DeadlineByCheckpoint (IN PROGRESS)](#deadlinebycheckpoint-in-progress)
+  * [FloatingPointCommutative (PLANNED)](#floatingpointcommutative-planned)
+  * [SplitPaths (PLANNED)](#splitpaths-planned)
 * [Contributing](#contributing)
 * [References](#references)
 
@@ -1160,6 +1165,54 @@ from the test file and run it:
 ```bash
 $LLVM_DIR/bin/opt -inline-threshold=0 -passes=always-inline -S <source/dir/llvm/tutor>/test/llvm/always-inline.ll
 ```
+
+MyHelloWorld
+=============
+This pass is similar to the first two examples: [HelloWorld](#helloworld) and [OpcodeCounter](#opcodecounter).
+Namely, `MyHelloWorld` is an Analysis pass on the Function IR level, that returns
+
+```cpp
+struct Result {
+  std::string FuncName;
+  std::string ReturnType;
+  std::vector<std::string> ParameterType;
+};
+```
+
+And then we have a separate printer that goes ahead and prints the value of each function.
+This is very straightforward and follows directly from the two reference examples.
+
+DeadlineByCheckpoint (IN PROGRESS)
+====================
+This pass is inspired as I just read the [Janus (Foukas et al. MobiCom '23)](https://doi.org/10.1145/3570361.3592493) paper.
+Namely, for safety, they insert a checkpoint that checks if the deadline is exceeded, and then exits the user program if it is.
+Here, I am implementing a simple version, where every function has a time limit, and the start of every basic block checks the limit.
+
+The relevant reference examples include ... where I need to:
+
+- module: insert the right runtime functions (writing this in C could be good)
+- entry point: get the start time
+- entering any basic block: get the end time, and call the runtime
+
+In terms of LLVM, this is very simple and the logic is delegated to the runtime (TODO).
+
+FloatingPointCommutative (PLANNED)
+========================
+My compilers instructor continuously makes a fuss about floating point operations not being commutative.
+Therefore, it seems interesting to swap the order of every FP operation and see if the result changes!
+That is what this pass does.
+
+This is closely related to #convertfcmpeq.
+
+SplitPaths (PLANNED)
+=====================
+I searched for some optimizations that GCC has but LLVM does not have.
+In particular, ... (process, LLM assistance, etc.).
+
+A simple one I found is `-fsplit-paths` in GCC, which is a tail duplication pass.
+In Engineering A Compiler, this is mentioned as Superblock Cloning (chp. 10).
+
+This is related to #duplicatebb.
 
 Contributing
 =============
