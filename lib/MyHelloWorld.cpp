@@ -14,12 +14,50 @@
 //=============================================================================
 
 #include "MyHelloWorld.h"
+#include <llvm/IR/Analysis.h>
+#include <llvm/Support/raw_ostream.h>
+#include <vector>
 
 using namespace llvm;
 
-PreservedAnalyses MyHelloWorld::run(Function &F, FunctionAnalysisManager &) {
-  errs() << "(me-llvm-tutor) " << F.getName() << ": " << *F.getFunctionType()
-         << "\n";
+// This is to identify the AnalysisPass for the caching to work.
+llvm::AnalysisKey MyHelloWorld::Key;
+
+MyHelloWorld::Result MyHelloWorld::run(Function &F, FunctionAnalysisManager &) {
+  errs() << "(me-llvm-tutor) " << "MyHelloWorld::run() " << F.getName() << "\n";
+
+  auto typeString = [](Type *Ty) -> std::string {
+    std::string ret;
+    llvm::raw_string_ostream rso(ret);
+    Ty->print(rso);
+    return rso.str();
+  };
+
+  std::vector<std::string> ParameterType;
+  for (auto &Arg : F.args())
+    ParameterType.push_back(typeString(Arg.getType()));
+
+  return MyHelloWorld::Result{.FuncName = std::string(F.getName()),
+                              .ReturnType = typeString(F.getReturnType()),
+                              .ParameterType = ParameterType};
+}
+
+PreservedAnalyses MyHelloWorldPrinter::run(Function &F,
+                                           FunctionAnalysisManager &FAM) {
+  auto &Result = FAM.getResult<MyHelloWorld>(F);
+
+  OS << "(me-llvm-tutor) " << "MyHelloWorldPrinter::run()\n";
+  OS << "\t" << Result.ReturnType << " " << Result.FuncName << "(";
+
+  bool first = true;
+  for (const auto &Str : Result.ParameterType) {
+    if (!first)
+      OS << ", ";
+    OS << Str;
+    first = false;
+  }
+  OS << ")\n";
+
   return PreservedAnalyses::all();
 }
 
@@ -38,11 +76,15 @@ PassPluginLibraryInfo getMyHelloWorldPluginInfo() {
             PB.registerPipelineParsingCallback(
                 [](StringRef Name, FunctionPassManager &FPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
-                  if (Name == "my-hello-world") {
-                    FPM.addPass(MyHelloWorld());
+                  if (Name == "print<my-hello-world>") {
+                    FPM.addPass(MyHelloWorldPrinter(llvm::errs()));
                     return true;
                   }
                   return false;
+                });
+            PB.registerAnalysisRegistrationCallback(
+                [](FunctionAnalysisManager &FAM) {
+                  FAM.registerPass([&] { return MyHelloWorld(); });
                 });
           }};
 }

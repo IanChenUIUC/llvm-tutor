@@ -1,12 +1,19 @@
-; RUN:  opt -load-pass-plugin  %shlibdir/libMyHelloWorld%shlibext -passes=my-hello-world -disable-output 2>&1 %s\
+; RUN:  opt -load-pass-plugin  %shlibdir/libMyHelloWorld%shlibext -passes="print<my-hello-world>" -disable-output 2>&1 %s\
 ; RUN:   | FileCheck %s
 
 ; Test 'my-hello-world' when run through opt (both new and legacy PMs)
-; CHECK: (me-llvm-tutor) foo: i32 (i32)
-; CHECK-NEXT: (me-llvm-tutor) bar: i32 (i32, i32)
-; CHECK-NEXT: (me-llvm-tutor) fez: i32 (i32, i32, i32)
-; CHECK-NEXT: (me-llvm-tutor) main: i32 (i32, ptr)
-
+; CHECK: (me-llvm-tutor) MyHelloWorld::run() foo
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorldPrinter::run()
+; CHECK-NEXT: 	i32 foo(i32)
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorld::run() bar
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorldPrinter::run()
+; CHECK-NEXT: 	i32 bar(i32, i32)
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorld::run() fez
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorldPrinter::run()
+; CHECK-NEXT: 	i32 fez(i32, i32, i32)
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorld::run() main
+; CHECK-NEXT: (me-llvm-tutor) MyHelloWorldPrinter::run()
+; CHECK-NEXT: 	i32 main(i32, ptr)
 
 define i32 @foo(i32) {
   %2 = shl nsw i32 %0, 1
